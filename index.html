@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Table</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styling */
+        nav {
+            background: linear-gradient(90deg, #323cf0, #c213f2);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        nav img {
+            width: 100px; /* Adjust logo size */
+        }
+
+        nav h1 {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        /* Navbar animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Title styling */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 40px;
+            font-size: 30px;
+            font-weight: bold;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Table container */
+        table {
+            width: 90%;
+            margin: 30px auto;
+            background-color: #fff;
+            border-collapse: collapse; /* Ensures grid structure */
+            border: 1px solid rgb(187, 184, 184); /* Gray border for the table */
+            border-radius: 10px; /* Apply border-radius to the whole table */
+            overflow: hidden; /* Prevents content from overflowing the border-radius */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 1s ease-in-out;
+        }
+
+        .bingdy {
+            width: 60px;
+            filter: brightness(1.5); /* Increases brightness by 50% */
+        }
+
+        /* Table header styling */
+        th, td {
+            border: 1px solid rgb(194, 191, 191); /* Gray border between all cells */
+            padding: 15px;
+            text-align: left;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Table header specific styling */
+        th {
+            background-color: #323cf0; /* Single consistent color */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        /* Add hover effect to rows */
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Stripe the table rows for better readability */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 20px;
+            color: #4CAF50;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Improve responsiveness on smaller screens */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 12px;
+            }
+        }
+
+        /* Table sliding animation */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Styling for expanded item details */
+        .item-details {
+            display: none;
+
+            font-size: 14px;
+
+        }
+
+        .expand-arrow {
+            cursor: pointer;
+            font-size: 18px;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #323cf0;
+        }
+
+        .object-details {
+            padding: 5px;
+            font-size: 14px;
+       
+        }
+
+        .object1 {
+            white-space: pre-wrap;
+            font-size: 13px;
+            color: #333;
+            padding: 5px;
+        }
+        pre {
+    background-color: transparent; /* Removes the default gray background */
+}
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <img src="https://res.cloudinary.com/dx97khgxd/image/upload/v1734184584/IMG_20241214_184502.png_mobdtx.png" alt="Bingdy Logo" class="bingdy">
+        <h1>Bingdy</h1>
+    </nav>
+
+    <!-- Table Title -->
+    <h1>Order List</h1>
+    
+    <!-- Table to display orders -->
+    <table id="ordersTable">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Ordered Items</th>
+                <th>Order Status</th>
+                <th>Feedback Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data rows will be inserted here dynamically -->
+        </tbody>
+    </table>
+
+    <!-- Loading spinner -->
+    <div id="loadingSpinner" class="loading">
+        <span>Loading orders...</span>
+    </div>
+
+    <script>
+        // Function to fetch orders and populate the table
+        function fetchOrders() {
+            fetch('http://localhost:3000/orders')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+                    const loadingSpinner = document.getElementById('loadingSpinner');
+                    tableBody.innerHTML = ''; // Clear the table body before inserting new data
+
+                    data.forEach(order => {
+                        const row = tableBody.insertRow();
+
+                        // Create cells for each piece of data
+                        row.insertCell(0).textContent = order.order_id;
+                        row.insertCell(1).textContent = order.name;
+                        row.insertCell(2).textContent = order.mobile;
+                        row.insertCell(3).textContent = order.email;
+                        row.insertCell(4).textContent = order.address;
+
+                        // Handle ordered items (array of objects)
+                        const orderedItemsCell = row.insertCell(5);
+                        const orderList = JSON.parse(order.ordered_items); // Directly use the ordered_items (array of objects)
+
+                        // Initially show Cart[len(items)]
+                        const arrowCell = document.createElement('span');
+                        arrowCell.textContent = `Cart [${orderList.length}]`; 
+                        arrowCell.classList.add('expand-arrow');
+                        orderedItemsCell.appendChild(arrowCell);
+
+                        // Create a container to display the item details
+                        const detailsContainer = document.createElement('div');
+                        detailsContainer.classList.add('item-details');
+                        orderedItemsCell.appendChild(detailsContainer);
+
+                        // Initially hide the object details
+                        detailsContainer.style.display = 'none';
+
+                        // Show objects list when the Cart[len(items)] is clicked
+                        arrowCell.addEventListener('click', () => {
+                            const isVisible = detailsContainer.style.display === 'block';
+                            detailsContainer.style.display = isVisible ? 'none' : 'block';
+
+                            if (!isVisible) {
+                                detailsContainer.innerHTML = orderList.map((item, index) =>
+                                    `<pre class="object-details" data-index="${index}">
+                                        object[${index}]
+                                    </pre>`
+                                ).join('');
+                            }
+                        });
+
+                        // When clicking an object, show its details
+                        detailsContainer.addEventListener('click', (e) => {
+                            if (e.target.classList.contains('object-details')) {
+                                const objectIndex = e.target.getAttribute('data-index');
+                                const objectDetails = orderList[objectIndex];
+
+                                const detailsHtml = `
+    <pre class = "object1">
+        {
+            "Food And Category": "${objectDetails['Food And Category']}",
+            "Item Price": "${objectDetails['Item Price']}",
+            "Description": "${objectDetails.Description}",
+            "Count": "${objectDetails.count}"
+        }
+    </pre>
+`;
+
+                                // Replace the content of the clicked object with its details
+                                e.target.innerHTML = detailsHtml;
+                            }
+                        });
+
+                        row.insertCell(6).textContent = order.order_status;
+                        row.insertCell(7).textContent = order.feedback_rating;
+                    });
+
+                    // Hide the loading spinner when data is loaded
+                    loadingSpinner.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error fetching orders:', error);
+                    alert('Failed to fetch orders.');
+                });
+        }
+
+        // Fetch and display orders when the page loads
+        window.onload = function() {
+            fetchOrders();
+        };
+    </script>
+
+</body>
+</html>
