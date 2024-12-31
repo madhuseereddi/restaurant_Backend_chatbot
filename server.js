@@ -226,7 +226,7 @@ const transporter = nodemailer.createTransport({
             <br/>
             <div class="content1">
                 <p>We have received your order and need your address to proceed with the shipment.</p>
-                <a href="http://localhost:3000/enter-address?order_id=${order_id}" class="button-1">Click here and enter your Address</a>
+                <a href="https://restaurant-backend-chacatbot.onrender.com/enter-address?order_id=${order_id}" class="button-1">Click here and enter your Address</a>
             </div>
 
             <div class="warning">
